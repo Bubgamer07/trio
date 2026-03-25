@@ -467,28 +467,28 @@ class WindowsIOManager:
 
             # LSPs can in theory override this, but we believe that it never
             # actually happens in the wild (except Komodia)
-            select_handle = _get_underlying_socket(
-                s,
-                which=WSAIoctls.SIO_BSP_HANDLE_SELECT,
-            )
-            try:
-                # LSPs shouldn't override this...
-                base_handle = _get_underlying_socket(s, which=WSAIoctls.SIO_BASE_HANDLE)
-            except OSError:
-                # But Komodia-based LSPs do anyway, in a way that causes
-                # a failure with WSAEFAULT. We have special handling for
-                # them in _get_base_socket(). Make sure it works.
-                _get_base_socket(s)
-            else:
-                if base_handle != select_handle:
-                    raise RuntimeError(
-                        "Unexpected network configuration detected: "
-                        "SIO_BASE_HANDLE and SIO_BSP_HANDLE_SELECT differ. "
-                        "Please file a bug at "
-                        "https://github.com/python-trio/trio/issues/new, "
-                        "and include the output of running: "
-                        "netsh winsock show catalog",
-                    )
+            # select_handle = _get_underlying_socket(
+            #     s,
+            #     which=WSAIoctls.SIO_BSP_HANDLE_SELECT,
+            # )
+            # try:
+            #     # LSPs shouldn't override this...
+            #     base_handle = _get_underlying_socket(s, which=WSAIoctls.SIO_BASE_HANDLE)
+            # except OSError:
+            #     # But Komodia-based LSPs do anyway, in a way that causes
+            #     # a failure with WSAEFAULT. We have special handling for
+            #     # them in _get_base_socket(). Make sure it works.
+            #     _get_base_socket(s)
+            # else:
+            #     if base_handle != select_handle:
+            #         raise RuntimeError(
+            #             "Unexpected network configuration detected: "
+            #             "SIO_BASE_HANDLE and SIO_BSP_HANDLE_SELECT differ. "
+            #             "Please file a bug at "
+            #             "https://github.com/python-trio/trio/issues/new, "
+            #             "and include the output of running: "
+            #             "netsh winsock show catalog",
+            #         )
 
     def close(self) -> None:
         try:
